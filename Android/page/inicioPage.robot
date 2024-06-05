@@ -25,7 +25,7 @@ ${BUTTON_EDITAR}             br.com.pztec.estoque:id/editar
 ${BUTTON_ENTRADA}            br.com.pztec.estoque:id/entrada
 ${BUTTON_SAIDA}              br.com.pztec.estoque:id/saida 
 
-${TEXTO_QUANTIDADE_ATUAL}    new UiSelector().text("Quantidade atual")
+${TEXTO_QUANTIDADE_ATUAL}    //android.widget.TextView[@text="Quantidade atual"]
 ${TEXTO_ADICIONAR_ESTOQUE}   (//android.widget.TextView[@text="Adicionar estoque"])[2]
 ${INPUT_NOVA_QTD_SOMA}       br.com.pztec.estoque:id/txt_qtdentrada 
 ${TEXTO_DIMINUIR_ESTOQUE}    (//android.widget.TextView[@text="Diminuir estoque"])[2]

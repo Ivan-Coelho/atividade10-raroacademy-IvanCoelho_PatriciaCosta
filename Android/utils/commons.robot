@@ -28,3 +28,6 @@ espera carregar e digita
     [Arguments]    ${elemento}    ${texto}
     Wait Until Element Is Visible   ${elemento}
     Input Text    ${elemento}    ${texto}
+
+tira foto
+    Capture Page Screenshot

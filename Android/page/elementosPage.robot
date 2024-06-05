@@ -42,7 +42,12 @@ ${ARQUIVO_BKP}                    xpath=//android.widget.TextView[contains(@text
 
 # TELA EXPORTAR DADOS
 
-${ARQUIVO_EXPORTAR}            br.com.pztec.estoque:id/datafileprod
+${ARQUIVO_EXPORTAR_PRODUTO}    br.com.pztec.estoque:id/datafileprod
+${ARQUIVO_EXPORTAR_ENTRADA}    br.com.pztec.estoque:id/datafileent
+${ARQUIVO_EXPORTAR_SAIDA}      br.com.pztec.estoque:id/datafilesai
+${ARQUIVO_EXPORTAR_GRUPO}      br.com.pztec.estoque:id/datafilegrupo  
+
+
 ${BUTTON_ENVIAR_EXPORT}        br.com.pztec.estoque:id/btn_prod
 
 ${TEXTO_MSN_RESTORE}           br.com.pztec.estoque:id/lbl_mensagem 
@@ -50,15 +55,25 @@ ${TEXTO_MSN_RESTORE}           br.com.pztec.estoque:id/lbl_mensagem
 ${TITULO_MSN_RESTAURACAO}        //android.widget.TextView[@resource-id="android:id/alertTitle"]
 ${TEXTO_MSN_RESTAURACAO}
 
-
+${BUTTON_ENVIAR_PROD}          br.com.pztec.estoque:id/btn_prod
+${BUTTON_ENVIAR_ENTRADA}       br.com.pztec.estoque:id/btn_ent 
+${BUTTON_ENVIAR_SAIDA}         br.com.pztec.estoque:id/btn_sai   
+${BUTTON_ENVIAR_GRUPOS}        br.com.pztec.estoque:id/btn_grupo
 
 
 # TELA IMPORTAR DADOS
 
+${TELA2}                         //android.widget.TextView[@text="Importar dados"]
 ${BUTTON_INPORT_PRODUTOS}        br.com.pztec.estoque:id/btn_produtos
 ${BUTTON_INPORT_ENTRADAS}        br.com.pztec.estoque:id/btn_entradas
 ${BUTTON_INPORT_SAIDAS}          br.com.pztec.estoque:id/btn_saidas
 ${BUTTON_GRUPO_PRODUTOS}         br.com.pztec.estoque:id/btn_grupos
+#${BUTTON_GRUPO_PRODUTOS}         //android.widget.Button[@resource-id="br.com.pztec.estoque:id/btn_grupos"]
+
+${PRODUTO_CSV}                   //android.widget.TextView[@resource-id="android:id/text1" and @text="produtos.csv"] 
+${ENTRADA_CSV}                   //android.widget.TextView[@resource-id="android:id/text1" and @text="entradas.csv"]
+${SAIDA_CSV}                     //android.widget.TextView[@resource-id="android:id/text1" and @text="saidas.csv"]   
+${GRUPO_CSV}                     //android.widget.TextView[@resource-id="android:id/text1" and @text="grupos.csv"]   
 
 
 *** Keywords ***
@@ -192,9 +207,121 @@ Então o usuário deverá ter acesso as funcionalidades de restore
 
 # TELA EXPORTAR DADOS
 
+E que o produto tenha movimentações de entrada e saida do estoque
+    Quando o usuário acessar a opção de entrada de produtos
+    E informar a quantidade de produtos a ser modificada    ${INPUT_NOVA_QTD_SOMA}    5
+    E confirmar a operação
+    Wait Until Page Contains Element    ${BUTTON_PESQUISAR}
+    Quando o usuário acessar a opção de saida de produtos
+    E informar a quantidade de produtos a ser modificada    ${INPUT_NOVA_QTD_SUB}    5
+    E confirmar a operação
+    Wait Until Page Contains Element    ${BUTTON_PESQUISAR}
 
+Quando o usuário acessar a área de exportar dados
+    Dado que usuário acessa a tela de menu
+    clica e espera carregar    ${BUTTON_EXPORTAR}    ${BUTTON_GERAR}
+
+Então o usuário deverá ter acesso as funcionalidades de exportação
+    Element Should Contain Text     ${TELA}             Exportar dados
+    Element Should Contain Text     ${TEXTO_PAGINAS}    Exportar para formato .csv
+    Element Should Contain Text     ${BUTTON_GERAR}     EXPORTAR DADOS
+    Element Should Be Visible       ${BUTTON_ENVIAR_PROD}
+    Element Should Be Visible       ${BUTTON_ENVIAR_ENTRADA}
+    Element Should Be Visible       ${BUTTON_ENVIAR_SAIDA}
+    Element Should Be Visible       ${BUTTON_ENVIAR_GRUPOS}  
+
+Então será possível exportar os dados
+    clica e espera carregar        ${BUTTON_GERAR}             ${MENSAGEM_ALERTA}
+    Element Should Contain Text    ${MENSAGEM_ALERTA}          Operação concluída!
+    Element Should Contain Text    ${TEXTO_MENSAGEM_ALERTA}    Enviar
+    clica e espera carregar        ${BUTTON_SIM}               ${BUTTON_GERAR} 
+
+E será possível visualizar os PDFs gerados
+    Element Should Contain Text    ${ARQUIVO_EXPORTAR_PRODUTO}    produtos.csv
+    Element Should Contain Text    ${ARQUIVO_EXPORTAR_ENTRADA}    entradas.csv
+    Element Should Contain Text    ${ARQUIVO_EXPORTAR_SAIDA}      saidas.csv
+    Element Should Contain Text    ${ARQUIVO_EXPORTAR_GRUPO}      grupos.csv
+
+E será possivel enviar os dados
+    Element Should Be Enabled    ${BUTTON_ENVIAR_PROD}
+    Element Should Be Enabled    ${BUTTON_ENVIAR_ENTRADA}
+    Element Should Be Enabled    ${BUTTON_ENVIAR_SAIDA}
+    Element Should Be Enabled    ${BUTTON_ENVIAR_GRUPOS} 
 
 # TELA IMPORTAR DADOS
 
+Dado que exista um produto com movimentação de estoque já exportado
+    Dado que existe um produto cadastrado    teclado    20    25
+    E que o produto tenha movimentações de entrada e saida do estoque
+    Quando o usuário acessar a área de exportar dados   
+    Então será possível exportar os dados
 
+Quando o usuário acessar a área de importar dados
+    Press Keycode    4
+    Quando acessa a area    ${BUTTON_IMPORTAR}    ${TELA2}    Importar dados
 
+Então o usuário deverá ter acesso as funcionalidades de importação
+    Element Should Be Enabled      ${BUTTON_INPORT_PRODUTOS}
+    Element Should Contain Text    ${BUTTON_INPORT_PRODUTOS}    RESTAURAR PRODUTOS
+    Element Should Be Enabled      ${BUTTON_INPORT_ENTRADAS}
+    Element Should Contain Text    ${BUTTON_INPORT_ENTRADAS}    RESTAURAR ENTRADAS
+    Element Should Be Enabled      ${BUTTON_INPORT_SAIDAS}
+    Element Should Contain Text    ${BUTTON_INPORT_SAIDAS}      RESTAURAR SAÍDAS
+    # Element Should Be Enabled      ${BUTTON_GRUPO_PRODUTOS}
+    #Element Should Contain Text    ${BUTTON_GRUPO_PRODUTOS}     GRUPO DE PRODUTOS
+    #não encontra o seletor nem com ID nem com o Xpath
+
+Então deverá ser possível realizar a restauração dos produtos
+    Click Element                           ${BUTTON_INPORT_PRODUTOS}
+    espera carregar e clica                 ${ESTOQUE}    ${ESTOQUE}
+    Wait Until Page Contains Element        ${PRODUTO_CSV}
+    clica e espera carregar                 ${PRODUTO_CSV}    ${MENSAGEM_ALERTA}
+    Element Should Contain Text             ${TEXTO_MENSAGEM_ALERTA}    Todos os produtos existentes no cadastro (se houver) serão excluídos e 1 produtos do arquivo CSV serão importados. Tem certeza que deseja executar? Você não poderá desfazer esta operação.
+    clica e espera carregar                 ${BUTTON_SIM}    ${MENSAGEM_ALERTA}
+    #Element Should Contain Text             ${MENSAGEM_ALERTA}    Mensagem
+    Element Should Contain Text             ${TEXTO_MENSAGEM_ALERTA}    1 registros inseridos.
+    clica e espera carregar                 ${BUTTON_SIM}    ${BUTTON_INPORT_PRODUTOS}
+
+Então deverá ser possível realizar a restauração das entradas de um produto
+    Click Element                            ${BUTTON_INPORT_ENTRADAS}
+    espera carregar e clica                  ${ESTOQUE}    ${ESTOQUE}
+    Wait Until Page Contains Element         ${ENTRADA_CSV}
+    clica e espera carregar                  ${ENTRADA_CSV}    ${MENSAGEM_ALERTA}
+    Element Should Contain Text              ${TEXTO_MENSAGEM_ALERTA}    Todos as entradas cadastradas (se houver) serão excluídas e 1 entradas do arquivo CSV serão importadas. Tem certeza que deseja executar? Você não poderá desfazer esta operação.
+    clica e espera carregar                  ${BUTTON_SIM}    ${MENSAGEM_ALERTA}
+    #Element Should Contain Text              ${MENSAGEM_ALERTA}    Mensagem
+    Element Should Contain Text              ${TEXTO_MENSAGEM_ALERTA}    1 registros inseridos.
+    clica e espera carregar                  ${BUTTON_SIM}    ${BUTTON_INPORT_ENTRADAS}
+
+Então deverá ser possível realizar a restauração das saídas de um produto    
+    Click Element                            ${BUTTON_INPORT_SAIDAS}
+    espera carregar e clica                  ${ESTOQUE}    ${ESTOQUE}
+    Wait Until Page Contains Element         ${SAIDA_CSV}
+    clica e espera carregar                  ${SAIDA_CSV}    ${MENSAGEM_ALERTA}
+    Element Should Contain Text              ${TEXTO_MENSAGEM_ALERTA}    Todos as saídas cadastradas (se houver) serão excluídas e 1 saídas do arquivo CSV serão importadas. Tem certeza que deseja executar? Você não poderá desfazer esta operação.
+    clica e espera carregar                  ${BUTTON_SIM}    ${MENSAGEM_ALERTA}
+    #Element Should Contain Text              ${MENSAGEM_ALERTA}    Mensagem
+    Element Should Contain Text              ${TEXTO_MENSAGEM_ALERTA}    1 registros inseridos.
+    clica e espera carregar                  ${BUTTON_SIM}    ${BUTTON_INPORT_SAIDAS}
+
+Então deverá ser possível realizar a restauração de um grupo de produtos   
+    Click Element                            ${BUTTON_GRUPO_PRODUTOS}
+    espera carregar e clica                  ${ESTOQUE}    ${ESTOQUE}
+    Wait Until Page Contains Element         ${PRODUTO_CSV}
+    clica e espera carregar                  ${GRUPO_CSV}    ${MENSAGEM_ALERTA}
+    Element Should Contain Text              ${TEXTO_MENSAGEM_ALERTA}    Todos os grupos cadastrados (se houver) serão excluídos e 1 grupos do arquivo CSV serão importados. Tem certeza que deseja executar? Você não poderá desfazer esta operação.
+    clica e espera carregar                  ${BUTTON_SIM}    ${MENSAGEM_ALERTA}
+    #Element Should Contain Text              ${MENSAGEM_ALERTA}    Mensagem
+    Element Should Contain Text              ${TEXTO_MENSAGEM_ALERTA}    1 registros inseridos.
+    clica e espera carregar                  ${BUTTON_SIM}    ${BUTTON_GRUPO_PRODUTOS}
+
+Então não será possível realizar a restauração
+    Então deverá ser possível realizar a restauração dos produtos
+    Click Element                           ${BUTTON_INPORT_PRODUTOS}
+    espera carregar e clica                 ${ESTOQUE}    ${ESTOQUE}
+    Wait Until Page Contains Element        ${PRODUTO_CSV}
+    clica e espera carregar                 ${SAIDA_CSV}    ${MENSAGEM_ALERTA}
+    Element Should Contain Text             ${TEXTO_MENSAGEM_ALERTA}    O arquivo selecionado não está adequado para importar. Motivo: Está vazio, ou corrompido, ou não é o arquivo produtos. A operação não poderá ser efetuada!
+    
+    
+#Essa mensagem varia o texto hora Mensagem hora Operação concluida!

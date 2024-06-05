@@ -56,8 +56,8 @@ CT006 - Cadastro de produto
         2020     sem fio      teclado     05          100       001
         2020     ${EMPTY}     teclado     05          100       001
         2020     sem fio      teclado     ${EMPTY}    100       001
-        
-        
+
+      
   
 
 CT007 - Deve ser possível acrescentar produtos ao estoque
