@@ -1,6 +1,6 @@
 *** Settings ***
 
-Library    AppiumLibrary
+Library    AppiumLibrary       
 
 Resource    utils/config.robot
 Resource    utils/commons.robot
