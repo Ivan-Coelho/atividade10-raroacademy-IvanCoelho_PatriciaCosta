@@ -8,7 +8,7 @@ Resource    ../base.robot
 ${BUTTON_GERAR}             br.com.pztec.estoque:id/btn_gerar  
 ${ARQUIVO_GERADO}           br.com.pztec.estoque:id/datafile
 
-${TEXTO_PAGINAS}        br.com.pztec.estoque:id/textView4
+${TEXTO_PAGINAS}            br.com.pztec.estoque:id/textView4
 
 # TELA RELATÓRIO
 
@@ -35,14 +35,23 @@ ${BUTTON_ENVIAR_BACKUP}     br.com.pztec.estoque:id/btn_send
 
 # TELA RESTORE
 
-
-${BUTTON_SELECIONAR_ARQUIVO}    br.com.pztec.estoque:id/btn_procurar
+${BUTTON_SELECIONAR_ARQUIVO}      br.com.pztec.estoque:id/btn_procurar
+${ESTOQUE}                        xpath=//android.widget.TextView[@resource-id="android:id/text1" and @text="Estoque"]  
+${ARQUIVO_BKP}                    xpath=//android.widget.TextView[contains(@text,'APP')][last()]
 
 
 # TELA EXPORTAR DADOS
 
 ${ARQUIVO_EXPORTAR}            br.com.pztec.estoque:id/datafileprod
 ${BUTTON_ENVIAR_EXPORT}        br.com.pztec.estoque:id/btn_prod
+
+${TEXTO_MSN_RESTORE}           br.com.pztec.estoque:id/lbl_mensagem 
+
+${TITULO_MSN_RESTAURACAO}        //android.widget.TextView[@resource-id="android:id/alertTitle"]
+${TEXTO_MSN_RESTAURACAO}
+
+
+
 
 # TELA IMPORTAR DADOS
 
@@ -113,9 +122,71 @@ Então o sistema deverá retorna uma mensagem de alerta
 
 # TELA BACKUP
 
+Dado que usuário acessa a tela de backup
+    Dado que usuário acessa a tela de menu
+    clica e espera carregar    ${BUTTON_BACKUP}    ${TELA}
 
+Quando acessa a tela de BACKUP
+    clica e espera carregar    ${BUTTON_BACKUP}    ${TELA}
+    
+Quando gerar um backup
+    clica e espera carregar    ${BUTTON_GERAR}    ${MENSAGEM_ALERTA}
+
+Então o usuário deverá ter acesso as funcionalidades de BACKUP
+    Element Should Contain Text    ${TELA}    Gerar backup
+    Element Should Be Visible      ${BUTTON_GERAR} 
+    Element Should Be Enabled      ${BUTTON_GERAR} 
+    Element Should Be Visible      ${BUTTON_ENVIAR_BACKUP}
+    Element Should Be Enabled      ${BUTTON_ENVIAR_BACKUP}
+    Element Should Contain Text    ${TEXTO_PAGINAS}     Envie o arquivo de backup para o drive virtual. Caso tenha problemas com seu aparelho seus dados poderão ser restaurados. Atenção, não altere o arquivo original, sob o risco de não conseguir restaurá-lo novamente.
+
+Então o backup deverá ser gerado com sucesso
+    Element Should Contain Text    ${MENSAGEM_ALERTA}    Operação concluída!
+    Element Should Contain Text    ${TEXTO_MENSAGEM_ALERTA}    Enviar
+    clica e espera carregar        ${BUTTON_SIM}    ${ARQUIVO_GERADO}
+
+Então deverá ser possível enviar o backup com sucesso
+    clica e espera carregar        ${BUTTON_SIM}    ${ARQUIVO_GERADO}
+    Element Should Be Enabled      ${BUTTON_ENVIAR_BACKUP}
 
 # TELA RESTORE
+
+Dado que usuário fez um backup
+    Dado que usuário acessa a tela de backup
+    Quando gerar um backup
+    Então o backup deverá ser gerado com sucesso
+
+Quando acessa a tela de RESTORE
+    clica e espera carregar    ${BUTTON_RESTORE}    ${BUTTON_SELECIONAR_ARQUIVO}
+
+Quando acessar a tela de RESTORE
+    Press Keycode    4
+    Wait Until Page Contains Element    ${BUTTON_RESTORE}
+    Quando acessa a tela de RESTORE
+
+E acessar a funcionalidade de selecionar arquivo
+    Click Element   ${BUTTON_SELECIONAR_ARQUIVO}    
+
+Então será possível buscar um arquivo
+    espera carregar e clica    ${ESTOQUE}    ${ESTOQUE}
+
+E será possivel restaurar um backup
+    espera carregar e clica    ${ARQUIVO_BKP}    ${ARQUIVO_BKP}
+
+E confirmar a restauração
+    Wait Until Page Contains Element    ${MENSAGEM_ALERTA}
+    Element Should Contain Text         ${MENSAGEM_ALERTA}           Confirma a restauração
+    Element Should Contain Text         ${TEXTO_MENSAGEM_ALERTA}     Atenção: você não poderá desfazer esta operação. Tem certeza que deseja continuar?
+    clica e espera carregar             ${BUTTON_SIM}        ${MENSAGEM_ALERTA}
+    Element Should Contain Text         ${TEXTO_MENSAGEM_ALERTA}     Operação concluída!
+    Click Element    ${BUTTON_SIM}
+
+Então o usuário deverá ter acesso as funcionalidades de restore
+    Element Should Contain Text    ${TELA}    Restaurar backup
+    Element Should Be Enabled      ${BUTTON_SELECIONAR_ARQUIVO}
+    Element Should Be Visible      ${BUTTON_SELECIONAR_ARQUIVO}    
+    Element Should Contain Text    ${BUTTON_SELECIONAR_ARQUIVO}    SELECIONAR ARQUIVO
+    Element Should Contain Text    ${TEXTO_MSN_RESTORE}    Atenção: você só deve executar esta operação caso tenha trocado de aparelho ou reinstalado o aplicativo.
 
 
 
