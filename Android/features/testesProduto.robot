@@ -49,13 +49,14 @@ CT005 - deve ser possível cadastrar um novo produto preenchendo apenas os campo
 
 CT006 - Cadastro de produto    
     [Template]    Cadastro de produto    
-        1010     sem fio      mouse       10         74.99      001
+       
         1010     com fio      mouse       10         14.99      001
+        2020     sem fio      teclado     ${EMPTY}    100       001
         2020     sem fio      teclado     05       ${EMPTY}     001
         2020     com fio      teclado     15         25.99      001
         2020     sem fio      teclado     05          100       001
         2020     ${EMPTY}     teclado     05          100       001
-        2020     sem fio      teclado     ${EMPTY}    100       001
+        1010     sem fio      mouse       10         74.99      001
 
       
   

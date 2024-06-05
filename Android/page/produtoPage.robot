@@ -75,10 +75,10 @@ E o produto deve deverá ser cadastrado
     Element Should Be Visible      ${PRODUTO_GERAL}
 
 Então o produto não sera cadastrado e o usuário permanecerá na página de Produtos
-    Element Should Contain Text    ${TELA}    Produto
-    Press Keycode    4    
-    Press Keycode    4
-    Wait Until Page Contains Element    ${BUTTON_PESQUISAR}                     android:id/search_button
+    Element Should Contain Text    ${TELA}    Produto  
+    Press Keycode    4     
+    Press Keycode    4  
+    Wait Until Page Contains Element    ${BUTTON_PESQUISAR}    
     Element Should Contain Text    ${TELA_INICIAL}    Cadastro de Produtos
     
 verifica tela inicial
